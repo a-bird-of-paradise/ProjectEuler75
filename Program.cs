@@ -17,21 +17,57 @@ namespace ProjectEuler75
             return ans;
         }
 
-        static void Main(string[] args)
+        static void MakeChildren(int Limit, int[] LengthArray, int[] Triple)
         {
-            int[] Fundamental = { 3, 4, 5 };
-
             int[,] A = { { -1, 2, 2 }, { -2, 1, 2 }, { -2, 2, 3 } };
             int[,] B = { { 1, 2, 2 }, { 2, 1, 2 }, { 2, 2, 3 } };
             int[,] C = { { 1, -2, 2 }, { 2, -1, 2 }, { 2, -2, 3 } };
 
-            int[] ans;
-            ans = MV(A, Fundamental);
-            Console.WriteLine(ans[0] + " " + ans[1] + " " + ans[2]);
-            ans = MV(B, Fundamental);
-            Console.WriteLine(ans[0] + " " + ans[1] + " " + ans[2]);
-            ans = MV(C, Fundamental);
-            Console.WriteLine(ans[0] + " " + ans[1] + " " + ans[2]);
+            int[] a = MV(A, Triple);
+
+            if (a[0] + a[1] + a[2] <= Limit)
+            {
+                LengthArray[a[0] + a[1] + a[2]]++;
+                MakeChildren(Limit, LengthArray, a);
+            }
+
+            a = MV(B, Triple);
+
+            if (a[0] + a[1] + a[2] <= Limit)
+            {
+                LengthArray[a[0] + a[1] + a[2]]++;
+                MakeChildren(Limit, LengthArray, a);
+            }
+
+            a = MV(C, Triple);
+
+            if (a[0] + a[1] + a[2] <= Limit)
+            {
+                LengthArray[a[0] + a[1] + a[2]]++;
+                MakeChildren(Limit, LengthArray, a);
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            const int Max = 1500000;
+            int[] Lengths = new int[Max + 1];
+            int[] WaysToMake = new int[Max + 1];
+            int[] Fundamental = { 3, 4, 5 };
+            Lengths[3 + 4 + 5] = 1;
+            MakeChildren(Max, Lengths, Fundamental);
+            int j;
+            for (int i = 1; i <= Max; i++)
+            {
+                if (Lengths[i] == 0) continue;
+                j = 1;
+                while (j * i <= Max)
+                {
+                    WaysToMake[i * j]++;
+                    j++;
+                }
+            }
+            Console.WriteLine(WaysToMake.Where(x => x == 1).Count());
         }
     }
 }
